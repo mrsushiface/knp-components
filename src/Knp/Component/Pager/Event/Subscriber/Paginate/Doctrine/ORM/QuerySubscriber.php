@@ -13,6 +13,7 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\Tools\Pagination\CountWalker as DoctrineCountWalker;
 use Doctrine\ORM\Tools\Pagination\WhereInWalker as DoctrineWhereInWalker;
 use Doctrine\ORM\Tools\Pagination\LimitSubqueryWalker as DoctrineLimitSubqueryWalker;
+use Doctrine\DBAL\Platforms\SQLServerPlatform;
 
 class QuerySubscriber implements EventSubscriberInterface
 {
@@ -27,7 +28,7 @@ class QuerySubscriber implements EventSubscriberInterface
             // process count
             $useDoctrineWalkers = false;
             $useDoctrineOutputWalker = false;
-            if (version_compare(\Doctrine\ORM\Version::VERSION, '2.3.0', '>=')) {
+            if (version_compare(\Doctrine\ORM\Version::VERSION, '2.3.0', '>=') && !($event->target->getEntityManager()->getConnection()->getDatabasePlatform() instanceof SQLServerPlatform)) {
                 $useDoctrineWalkers = true;
                 $useDoctrineOutputWalker = true;
             } else if (version_compare(\Doctrine\ORM\Version::VERSION, '2.2.0', '>=')) {
